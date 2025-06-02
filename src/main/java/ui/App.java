@@ -20,6 +20,7 @@ public class App extends Application {
         try {
             URL fxmlUrl = getClass().getClassLoader().getResource("ui/TypingTest.fxml");
             System.out.println("FXML URL: " + fxmlUrl);
+            assert fxmlUrl != null;
             Parent root = FXMLLoader.load(fxmlUrl);
             Scene scene = new Scene(root);
             stage.setTitle("App");

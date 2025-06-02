@@ -38,8 +38,9 @@ public class Timer {
                     listener.onTimeout();
                 }
             } catch (InterruptedException e) {
-                Console.print("Error : " + e.getMessage() , Console.Color.RED);
+                // Do nothing . stopped intentionally
             }
+
         });
         timerThread.setDaemon(true);
         timerThread.start();
