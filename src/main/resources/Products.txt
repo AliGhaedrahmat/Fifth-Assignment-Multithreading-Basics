@@ -1,0 +1,9 @@
+1,Apple iPhone 16,999.99
+2,Samsung Galaxy S24,899.99
+3,Google Pixel 7,799.99
+4,OnePlus 11,699.99
+5,Sony WH-1000XM5 Headphones,349.99
+6,Apple MacBook Air,1199.99
+7,Dell XPS 13 Laptop,1099.99
+8,Amazon Echo Dot,49.99
+9,Fitbit Charge 5,129.99

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="222.0" prefWidth="403.0" spacing="10"
+      xmlns="http://javafx.com/javafx/"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ui.Controllers.TypingTestController">
+
+    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Typing Test" />
+
+    <Label fx:id="wordLabel" style="-fx-font-size: 18px;" text="Type this word" />
+
+    <TextField fx:id="inputField" maxWidth="219.0" minWidth="0.0" prefHeight="30.0" prefWidth="219.0" promptText="Type here..." disable="true" />
+
+    <Label fx:id="feedbackLabel" style="-fx-font-size: 16px; -fx-text-fill: green;" text="" />
+
+    <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="startButton" prefWidth="100" text="Start" />
+        <Button fx:id="restartButton" prefWidth="100" text="Restart" disable="true" />
+    </HBox>
+
+    <HBox alignment="CENTER" spacing="40">
+        <Label fx:id="correctLabel" text="Correct: 0" />
+        <Label fx:id="incorrectLabel" text="Incorrect: 0" />
+        <Label fx:id="timeLabel" text="Total Time: 0s" />
+    </HBox>
+
+    <Label fx:id="statsLabel" style="-fx-font-size: 14px;" text="WPM: 0.0 | Avg Time: 0.0s" />
+
+</VBox>
