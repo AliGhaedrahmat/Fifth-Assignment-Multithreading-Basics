@@ -1,55 +1,89 @@
-# Report: Three Ways to Send a Login Message
+# Theoretical Questions – Report.md
 
-### Method 1: Plain String Format
+## 1. start() vs run()
 
-**What are the pros and cons of using a plain string like `"LOGIN|user|pass"`?**
+### What output do you get from the program? Why?
 
-Honestly, this method is super straightforward and easy to implement. You just send a simple string with fields separated by a delimiter (`|` in this case). It’s easy to read and debug since it’s plain text. But the downside is that if the username or password accidentally contains the delimiter, your parsing will break and mess things up. Also, this approach is very basic — it can’t handle complex or nested data, so it’s not very scalable if you want to add more info later.
+When we run this program, the output looks something like this:
 
----
-
-**How would you parse it, and what happens if the delimiter appears in the data?**
-
-To parse it, you just split the string by the delimiter like this:
-
-```java
-String[] parts = message.split("\|");
+```
+Calling run()
+Running in: main
+Calling start()
+Running in: Thread-2
 ```
 
-Then you take the pieces based on their position. But if the data itself contains the `|` character, splitting will mess up the parts and your program won’t know what to do. For example, if someone’s password was `my|secret`, the split would create extra parts and break your logic.
+This happens because when we call `t1.run()`, it just runs the code inside the `run()` method on the **main thread**, like calling a regular method. That's why it prints `Running in: main`.
+
+But when we use `t2.start()`, it creates a **new thread** and then runs the `run()` method on that thread. So it prints `Running in: Thread-2`, which is the name we gave that thread.
+
+### What’s the difference in behavior between calling start() and run()?
+
+The key difference is that `start()` actually creates a new thread and runs `run()` inside that new thread. This lets your program do multiple things at once (which is the whole point of multithreading).
+
+On the other hand, `run()` is just like calling a regular method. It doesn’t create a new thread; it runs in the current thread, so no parallel execution happens.
+
+So if you want true multithreading behavior, you should always use `start()`.
 
 ---
 
-**Is this approach suitable for more complex or nested data?**
+## 2. Daemon Threads
 
-Not really. For simple stuff, it’s fine. But if you want to send objects with nested fields, lists, or optional values, this method gets messy very fast. You’ll have to invent your own escaping rules or complicated parsing logic, which is a pain.
+### What output do you get from the program? Why?
+
+You’ll likely see:
+
+```
+Main thread ends.
+```
+
+and maybe one or two lines of:
+
+```
+Daemon thread running...
+```
+
+But the important thing is that the daemon thread doesn’t get to finish its loop. That’s because once the **main thread** ends, the whole program exits—even if daemon threads are still running. Daemon threads are meant to do background stuff, but they don’t keep the program alive.
+
+### What happens if you remove thread.setDaemon(true)?
+
+If you remove that line, the thread becomes a **user thread** instead of a daemon. That means the program **will not exit** until this thread finishes its work. So now, the program will stay alive long enough for the loop to print all 20 lines of “Daemon thread running...”
+
+### What are some real-life use cases of daemon threads?
+
+Daemon threads are good for things that should run in the background but aren’t essential. For example:
+
+* Garbage collection
+* Background logging
+* Monitoring tasks
+
+If they don’t finish, it’s not the end of the world. That’s why Java doesn’t wait for them when exiting.
 
 ---
 
-### Method 2: Serialized Java Object
+## 3. A shorter way to create threads
 
-**What’s the advantage of sending a full Java object?**
+### What output do you get from the program?
 
-The big plus here is you can send the whole object exactly as it is, including all its data and structure, without worrying about parsing or formatting strings manually. On the receiving side, you just deserialize the object back to its original form. It’s neat and very Java-friendly.
+You’ll see:
 
----
+```
+Thread is running using a ...!
+```
 
-**Could this work with a non-Java client like Python?**
+### What is the `() -> { ... }` syntax called?
 
-Unfortunately no. Java serialization uses a special binary format that only Java understands. So if your client or server isn’t Java, this won’t work. Other languages don’t have built-in support for Java’s serialized objects, so it’s basically Java-to-Java only.
+That’s a **lambda expression**. It’s a shorter way of writing something that implements a functional interface, like `Runnable`.
 
----
+### How is this code different from creating a class that extends Thread or implements Runnable?
 
-### Method 3: JSON
+Normally, if you want to create a thread, you'd either:
 
-**Why is JSON often preferred for communication between different systems?**
+* Create a new class that extends `Thread`, or
+* Create a class that implements `Runnable`.
 
-It’s easy to read and write, supports nested data naturally, and is supported by pretty much every programming language out there. Because it’s plain text, it’s easy to debug and works perfectly for communication between different platforms and languages.
+Both options take more lines and require extra boilerplate.
 
----
+With a lambda expression, you can define the `run()` method in just one line, right where you create the thread. It’s faster, cleaner, and easier to read—especially when you don’t need to reuse the logic anywhere else.
 
-**Would this format work with servers or clients written in other languages?**
-
-Yes! JSON is designed exactly for that. Whether your client is in Python, JavaScript, Java, or anything else, it can easily encode or decode JSON. That makes it super flexible and ideal for cross-platform communication.
-
----
+So overall, it’s just a more modern and compact way to create threads for simple tasks.
